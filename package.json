@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "http": "^0.0.1-security",
     "lodash": "^4.17.21",
+    "socket.io": "^4.7.1",
+    "socket.io-client": "^4.7.1",
     "vue": "^3.2.45"
   },
   "devDependencies": {
