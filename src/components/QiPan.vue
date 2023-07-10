@@ -17,8 +17,11 @@ socket.on("disconnect", () => {
 });
 
 socket.on("move", (data) => {
-  console.log("move");
-  state.situation.qiZiInfoList = data
+  var list = [];
+  data.state.forEach(item => {
+    list.push(new QiZiInfo(item.color, item.name, item.location))
+  });
+  state.situation.qiZiInfoList = list
 })
 // end socket work
 
