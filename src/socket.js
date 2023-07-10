@@ -10,6 +10,13 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("connected");
+
+  socket.on('move', (state) => {
+    // we tell the client to execute 'new message'
+    socket.broadcast.emit('move', {
+      state: state
+    });
+  });
 });
 
 httpServer.listen(3000);

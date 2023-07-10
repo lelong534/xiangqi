@@ -1,7 +1,26 @@
 <script setup>
 import _ from 'lodash'
-import { reactive, ref } from 'vue';
 import QiZi from './QiZi.vue'
+import { io } from "socket.io-client";
+import { reactive, ref } from 'vue';
+
+
+// socket work
+const socket = io("localhost:3000");
+
+socket.on("connect", () => {
+  console.log("connected")
+});
+
+socket.on("disconnect", () => {
+    console.log("disconnected")
+});
+
+socket.on("move", (data) => {
+  console.log("move");
+  state.situation.qiZiInfoList = data
+})
+// end socket work
 
 // 棋子信息
 class QiZiInfo {
@@ -14,24 +33,6 @@ class QiZiInfo {
     this.name = name
     this.location = location
   }
-}
-
-// 局面信息
-class Situation {
-  qiZiInfoList = []
-}
-
-// 棋谱
-class Manual {
-  moves = []
-}
-
-class Move {
-  qz = null
-  to = [-1, -1]
-  oldSituation = []
-  newSituation = []
-  desc = ''
 }
 
 const state = reactive({
@@ -76,6 +77,25 @@ const state = reactive({
     moves: [],
   },
 })
+
+// 局面信息
+class Situation {
+  qiZiInfoList = []
+}
+
+// 棋谱
+class Manual {
+  moves = []
+}
+
+class Move {
+  qz = null
+  to = [-1, -1]
+  oldSituation = []
+  newSituation = []
+  desc = ''
+}
+
 
 function back() {
   const move = state.manual.moves.pop()
@@ -153,6 +173,7 @@ function move(r, c) {
       console.warn('走子违反规则！')
     }
   }
+  socket.emit('move', state.situation.qiZiInfoList);
 }
 function moveDesc(oldSituation, qz, to) {
   const name = qz.name
@@ -417,6 +438,7 @@ function between (a, b, c) {
 
 </script>
 <template>
+  <div>
   <div class="qipan-wrapper">
     <div class="qipan">
       <div class="column-index column-index-black">
@@ -475,7 +497,7 @@ function between (a, b, c) {
         <button @click="back()">后退</button>
       </div>
     </div>
-  </div>
+  </div></div>
 </template>
 <style scoped lang="less">
 @line-color: blue;
